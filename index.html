@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue 3 - Tutorial</title>
+</head>
+<body>
+    <div style="height : 100px"></div>
+
+    <div id="app" >
+        {{usuarios}}
+        
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script>
+        //data,method,props,mounted, created, computed, watch, destroyed
+        const hola = {
+           data(){
+               return {
+                nombre:'Max',
+                usuarios : []
+               }
+           },
+           mounted(){
+            this.getUser()    
+           },
+           methods:{
+               getUser(){
+                   fetch('http://localhost:3000/').then(response=>response.json()).then(d => usuarios = d)
+                }
+           }
+           
+        }
+        let mountedApp = Vue.createApp(hola).mount('#app')
+
+
+        let number = 10
+        let n1 = 0, n2 = 1 ,nextTerm
+
+        for (let i = 1;i<number;i++){
+            console.log(n1)
+            nextTerm = n1 + n2
+            n1 = n2
+            n2 = nextTerm
+        }
+
+    </script>
+</body>
+</html>
