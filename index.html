@@ -5,50 +5,150 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vue 3 - Tutorial</title>
+
+    <style>
+        .root{
+            color:#2a2a22;
+            
+            background-color: #744e2e;
+            color: #aa0000;
+            color: #0f4880;
+        }
+
+        table tr td{
+          width: 30px;
+          height: 30px;
+          padding: 10px;
+          margin: 10px;
+          text-align: center;
+        }
+        .colorBlue{
+          background-color: blue;
+        }
+        .hidden{
+          opacity: 0;
+        }
+    </style>
 </head>
 <body>
-    <div style="height : 100px"></div>
-    <h1>HOLA MUNDO</h1>
-    <h1>Cuanto Tiempo paso despues del delete branch</h1>
 
-    <div id="app" >
-        {{usuarios}}
-        
-    </div>
 
-    <script src="https://unpkg.com/vue@next"></script>
-    <script>
-        //data,method,props,mounted, created, computed, watch, destroyed
-        const hola = {
-           data(){
-               return {
-                nombre:'Max',
-                usuarios : []
-               }
-           },
-           mounted(){
-            this.getUser()    
-           },
-           methods:{
-               getUser(){
-                   fetch('http://localhost:3000/').then(response=>response.json()).then(d => usuarios = d)
-                }
-           }
-           
+  <table border="1px" id="toca">
+    <tr>
+      <td value="uno"></td>
+      <td value="dos"></td>
+      <td value="tres"></td>
+    </tr>
+    <tr>
+      <td value="cuatro"></td>
+      <td value="cinco"></td>
+      <td value="seis"></td>
+    </tr>
+    <tr>
+      <td value="siete"></td>
+      <td value="ocho"></td>
+      <td value="nueve"></td>
+    </tr>
+  </table>
+
+  <div id='ganador' class="hidden">
+    Felicitaciones
+  </div>
+  <div id="termino" class="hidden">
+    <button onclick="location.reload()">Reiniciar</button>
+
+  </div>
+
+  <script>
+    let turnoJugador = 0;
+    let jugadores = {
+      rojo :{
+        color : 'red',
+        impar : true,
+        tok : []
+      },
+      azul : {
+        color: 'blue',
+        impar : false,
+        tok : []
+      }
+    }
+
+    let toca = document.getElementById('toca');
+    let ganadores = [
+     ['uno','dos','tres'],
+     ['cuatro','cinco','seis'],
+     ['siete','ocho','nueve'],
+     ['uno','cuatro','siete'],
+     ['dos','cinco','ocho'],
+     ['tres','seis','nueve'],
+     ['uno','cinco','nueve'],
+     ['tres','cinco','siete']]
+     let tok = [];
+     
+     toca.addEventListener('click',clickJuego);
+     
+     function clickJuego(e){
+       if(e.target.nodeName == 'TD'){
+         let colorBack = ''
+         let jugador 
+        if (turnoJugador % 2 == 0){
+          jugador = jugadores.rojo
+          turnoJugador++
+        }else{
+          jugador = jugadores.azul
+          turnoJugador++
+
         }
-        let mountedApp = Vue.createApp(hola).mount('#app')
 
 
-        let number = 10
-        let n1 = 0, n2 = 1 ,nextTerm
-
-        for (let i = 1;i<number;i++){
-            console.log(n1)
-            nextTerm = n1 + n2
-            n1 = n2
-            n2 = nextTerm
+         e.target.style.backgroundColor = jugador.color
+         let element = e.target.attributes[0].value
+         let found = tok.find(value => value == element) ;
+         if (!found){
+           tok.push(e.target.attributes[0].value )
+           jugador.tok.push(e.target.attributes[0].value )
+          }
+          if (comprobar(jugador.tok)){
+            document.getElementById('ganador').classList.remove('hidden')
+            document.getElementById('termino').classList.remove('hidden')
+            document.getElementById('ganador').innerText = `Felicitaciones Jugador ${jugador.color}`
+            toca.removeEventListener('click',clickJuego)
+          }
         }
+        if (tok.length == 9){
+          document.getElementById('termino').classList.remove('hidden')
+          toca.removeEventListener('click',clickJuego)
 
-    </script>
+        }
+      }
+      
+      
+function comprobar(tok){
+  let contador = 0;
+  try{
+
+    ganadores.forEach(candidato => {
+      candidato.forEach(value => {
+        tok.forEach(valor => {
+          if (value == valor){
+            contador++
+          }
+        })
+      })
+      if(contador == 3){
+        throw BreakGanador;
+      }
+      contador = 0
+    })
+  }catch (err){
+    return 'Ganador'
+  }
+  return 0
+}
+
+
+  </script>
+ 
 </body>
 </html>
